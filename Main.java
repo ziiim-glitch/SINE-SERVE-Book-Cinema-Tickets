@@ -14,7 +14,6 @@ public class Main {
         System.out.println("=== SINE-SERVE: Cinema Schedule & Prices ===");
         System.out.println("Testing tip: Today's date is " + LocalDate.now());
 
-        // Table 1: Regular Movies
         System.out.println("\n=================================================================================================");
         System.out.println("                                AVAILABLE MOVIE LINE-UP & SCHEDULES                              ");
         System.out.println("=================================================================================================");
@@ -29,7 +28,6 @@ public class Main {
                 group.getPrice());
         }
 
-        // Table 2: Christmas Promo Movies
         System.out.println("\n=================================================================================================");
         System.out.println("                         CHRISTMAS HOLIDAY PROMO (ALL MOVIES: PHP 102.00)                        ");
         System.out.println("=================================================================================================");
@@ -121,7 +119,6 @@ public class Main {
 
                 BillingCalculator billing = new BillingCalculator(ticket.getPrice(), quantity, hasDiscount, paymentMethodName);
 
-                // --- RECEIPT DISPLAY WITH REMINDERS ---
                 System.out.println("\n=================================================");
                 System.out.println("                 BOOKING RECEIPT                 ");
                 System.out.println("=================================================");
@@ -176,7 +173,6 @@ public class Main {
                 System.out.println("[Notice] " + e.getMessage());
             }
 
-            // --- CONTINUE OR EXIT PROMPT ---
             System.out.print("\nDo you want to continue booking another ticket or exit? (continue/exit): ");
             String choice = scanner.nextLine().trim();
             if (choice.equalsIgnoreCase("exit") || choice.equalsIgnoreCase("e")) {
