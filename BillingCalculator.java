@@ -4,8 +4,7 @@ public class BillingCalculator {
     private boolean hasDiscount;
     private String paymentMethod;
     private static final double ONLINE_FEE = 10.00;
-    private static final double DISCOUNT_RATE = 0.20; // 20% discount para sa PWD/Senior
-
+    private static final double DISCOUNT_RATE = 0.20; 
     public BillingCalculator(double basePrice, int quantity, boolean hasDiscount, String paymentMethod) {
         this.basePrice = basePrice;
         this.quantity = quantity;
