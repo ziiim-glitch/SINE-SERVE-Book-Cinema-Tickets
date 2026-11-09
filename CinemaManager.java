@@ -6,18 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+//Exception thrown when a movie schedule or movie ID cannot be found.
 class ScheduleNotFoundException extends Exception {
     public ScheduleNotFoundException(String message) {
         super(message);
     }
 }
 
+//Exception thrown when an invalid date (such as an unsupported year) is provided.
 class InvalidDateException extends Exception {
     public InvalidDateException(String message) {
         super(message);
     }
 }
 
+//Represents a group of movies sharing a specific release or screening date range.
 class MovieGroup {
     private int id;
     private String title;
@@ -40,16 +43,19 @@ class MovieGroup {
     public double getPrice() { return price; }
 }
 
+//Manages movie schedules, regular movie lists, promotional lists, and handles ticket queries based on dates and movie IDs.
 public class CinemaManager {
     private List<MovieSchedule> schedules;
     private List<MovieGroup> regularGroups;
     private List<MovieGroup> promoGroups;
 
+//Initializes the cinema manager with default regular movies, Christmas promotional groups, and populates daily schedules.
     public CinemaManager() {
         schedules = new ArrayList<>();
         regularGroups = new ArrayList<>();
         promoGroups = new ArrayList<>();
 
+        // Define movie date ranges and populate regular groups
         String range1 = "Nov 4 - Nov 15, 2026";
         regularGroups.add(new MovieGroup(1, "Godzilla Minus Zero", range1, "1:00 PM", 350.00));
         regularGroups.add(new MovieGroup(2, "Ramayana: Part 1", range1, "4:00 PM", 350.00));
@@ -69,12 +75,14 @@ public class CinemaManager {
         String range5 = "Dec 18 - Dec 31, 2026";
         regularGroups.add(new MovieGroup(9, "Avengers: Doomsday", range5, "3:00 PM", 400.00));
 
+        // Define and populate Christmas promotional movie groups
         String promoRange = "Dec 20 - Dec 31, 2026";
         promoGroups.add(new MovieGroup(10, "Home Alone [CHRISTMAS PROMO]", promoRange, "11:00 AM", 100.00));
         promoGroups.add(new MovieGroup(11, "It's a Wonderful Life [CHRISTMAS PROMO]", promoRange, "1:30 PM", 100.00));
         promoGroups.add(new MovieGroup(12, "Elf [CHRISTMAS PROMO]", promoRange, "4:00 PM", 100.00));
         promoGroups.add(new MovieGroup(13, "The Polar Express [CHRISTMAS PROMO]", promoRange, "7:00 PM", 100.00));
 
+        // Generate concrete daily schedules from templates across date ranges
         addMoviesForDateRange(LocalDate.of(2026, 11, 4), LocalDate.of(2026, 11, 15), List.of(
             new MovieSchedule("Godzilla Minus Zero", null, "1:00 PM", 350.00),
             new MovieSchedule("Ramayana: Part 1", null, "4:00 PM", 350.00),
@@ -106,14 +114,14 @@ public class CinemaManager {
             new MovieSchedule("The Polar Express [CHRISTMAS PROMO]", null, "7:00 PM", 102.00)
         ));
     }
-
+     
     private void addMoviesForDateRange(LocalDate startDate, LocalDate endDate, List<MovieSchedule> templateMovies) {
         LocalDate current = startDate;
         while (!current.isAfter(endDate)) {
             for (MovieSchedule movie : templateMovies) {
                 schedules.add(new MovieSchedule(movie.getTitle(), current, movie.getShowTime(), movie.getPrice()));
             }
-            current = current.plusDays(1);
+            current = current.plusDays(1); // Move to the next calendar day
         }
     }
 
@@ -121,6 +129,7 @@ public class CinemaManager {
     public List<MovieGroup> getPromoGroups() { return promoGroups; }
 
     public MovieSchedule getMovieTicket(String dateInput, int movieNumber) throws InvalidDateException, ScheduleNotFoundException, DateTimeParseException {
+        // Build a flexible date formatter to support multiple date input formats (YYYY-MM-DD, Month D, YYYY, etc.)
         DateTimeFormatter flexibleFormatter = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ofPattern("[yyyy-MM-dd][MMMM d, yyyy][MMM d, yyyy]"))
@@ -128,7 +137,6 @@ public class CinemaManager {
 
         LocalDate targetDate = LocalDate.parse(dateInput.trim(), flexibleFormatter);
 
-    
         if (targetDate.getYear() < 2026) {
             throw new InvalidDateException("Invalid date: Years below 2026 are not allowed.");
         }
@@ -150,6 +158,7 @@ public class CinemaManager {
                 break;
             }
         }
+        
         if (selectedTitle == null) {
             for (MovieGroup group : promoGroups) {
                 if (group.getId() == movieNumber) {
