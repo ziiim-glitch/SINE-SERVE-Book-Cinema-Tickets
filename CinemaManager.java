@@ -50,7 +50,6 @@ public class CinemaManager {
         regularGroups = new ArrayList<>();
         promoGroups = new ArrayList<>();
 
-        // --- REGULAR MOVIES WITH CUSTOM DATE RANGES ---
         String range1 = "Nov 4 - Nov 15, 2026";
         regularGroups.add(new MovieGroup(1, "Godzilla Minus Zero", range1, "1:00 PM", 350.00));
         regularGroups.add(new MovieGroup(2, "Ramayana: Part 1", range1, "4:00 PM", 350.00));
@@ -70,14 +69,12 @@ public class CinemaManager {
         String range5 = "Dec 18 - Dec 31, 2026";
         regularGroups.add(new MovieGroup(9, "Avengers: Doomsday", range5, "3:00 PM", 400.00));
 
-        // --- CHRISTMAS PROMO MOVIES (Dec 20 - Dec 31, 2026 - PHP 102.00) ---
         String promoRange = "Dec 20 - Dec 31, 2026";
         promoGroups.add(new MovieGroup(10, "Home Alone [CHRISTMAS PROMO]", promoRange, "11:00 AM", 100.00));
         promoGroups.add(new MovieGroup(11, "It's a Wonderful Life [CHRISTMAS PROMO]", promoRange, "1:30 PM", 100.00));
         promoGroups.add(new MovieGroup(12, "Elf [CHRISTMAS PROMO]", promoRange, "4:00 PM", 100.00));
         promoGroups.add(new MovieGroup(13, "The Polar Express [CHRISTMAS PROMO]", promoRange, "7:00 PM", 100.00));
 
-        // --- POPULATE DAILY SCHEDULES FOR SEARCHING ---
         addMoviesForDateRange(LocalDate.of(2026, 11, 4), LocalDate.of(2026, 11, 15), List.of(
             new MovieSchedule("Godzilla Minus Zero", null, "1:00 PM", 350.00),
             new MovieSchedule("Ramayana: Part 1", null, "4:00 PM", 350.00),
@@ -131,7 +128,7 @@ public class CinemaManager {
 
         LocalDate targetDate = LocalDate.parse(dateInput.trim(), flexibleFormatter);
 
-        // Validation para sa mga taon
+    
         if (targetDate.getYear() < 2026) {
             throw new InvalidDateException("Invalid date: Years below 2026 are not allowed.");
         }
@@ -140,14 +137,12 @@ public class CinemaManager {
             throw new ScheduleNotFoundException("No movie schedule available yet for " + targetDate.getYear() + "!");
         }
 
-        // Suriin kung ang petsa ay nasa loob ng saklaw ng mga pangkalahatang pelikula (Nov 4 hanggang Dec 31, 2026)
         LocalDate minDate = LocalDate.of(2026, 11, 4);
         LocalDate maxDate = LocalDate.of(2026, 12, 31);
         if (targetDate.isBefore(minDate) || targetDate.isAfter(maxDate)) {
             throw new ScheduleNotFoundException("No movie schedules available for this date (" + targetDate + "). Schedules are only available from November to December 2026.");
         }
 
-        // Hanapin ang titulo ng pelikula base sa ibinigay na numero
         String selectedTitle = null;
         for (MovieGroup group : regularGroups) {
             if (group.getId() == movieNumber) {
@@ -168,7 +163,6 @@ public class CinemaManager {
             throw new ScheduleNotFoundException("Invalid movie number selected: " + movieNumber);
         }
 
-        // Hanapin kung ang napiling pelikula ay ipalalabas sa eksaktong petsang iyon
         for (MovieSchedule schedule : schedules) {
             if (schedule.getShowDate().equals(targetDate) && schedule.getTitle().equalsIgnoreCase(selectedTitle)) {
                 return schedule;
