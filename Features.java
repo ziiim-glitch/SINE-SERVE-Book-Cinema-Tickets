@@ -14,7 +14,6 @@ public class Features {
         System.out.println("=== SINE-SERVE: Cinema Schedule & Prices ===");
         System.out.println("Testing tip: Today's date is " + LocalDate.now());
 
-        // Table 1: Regular Movies
         System.out.println("\n=================================================================================================");
         System.out.println("                                AVAILABLE MOVIE LINE-UP & SCHEDULES                              ");
         System.out.println("=================================================================================================");
@@ -29,7 +28,6 @@ public class Features {
                 group.getPrice());
         }
 
-        // Table 2: Christmas Promo Movies
         System.out.println("\n=================================================================================================");
         System.out.println("                         CHRISTMAS HOLIDAY PROMO (ALL MOVIES: PHP 102.00)                        ");
         System.out.println("=================================================================================================");
@@ -91,7 +89,6 @@ public class Features {
                 String discountInput = scanner.nextLine().trim();
                 boolean hasDiscount = discountInput.equalsIgnoreCase("yes") || discountInput.equalsIgnoreCase("y");
 
-                // --- PAYMENT METHOD SELECTION ---
                 System.out.println("\nSelect Payment Method:");
                 System.out.println("[1] GCash");
                 System.out.println("[2] Maya");
@@ -121,7 +118,6 @@ public class Features {
 
                 BillingCalculator billing = new BillingCalculator(ticket.getPrice(), quantity, hasDiscount, paymentMethodName);
 
-                // --- RECEIPT DISPLAY WITH REMINDERS ---
                 System.out.println("\n=================================================");
                 System.out.println("                 BOOKING RECEIPT                 ");
                 System.out.println("=================================================");
@@ -155,7 +151,6 @@ public class Features {
                 System.out.println(" 5. Tickets are non-refundable once confirmed.");
                 System.out.println("=================================================");
 
-                // --- CONFIRMATION ---
                 System.out.print("Do you want to confirm this reservation? (yes/no): ");
                 String confirm = scanner.nextLine().trim();
 
@@ -176,7 +171,6 @@ public class Features {
                 System.out.println("[Notice] " + e.getMessage());
             }
 
-            // --- CONTINUE OR EXIT PROMPT ---
             System.out.print("\nDo you want to continue booking another ticket or exit? (continue/exit): ");
             String choice = scanner.nextLine().trim();
             if (choice.equalsIgnoreCase("exit") || choice.equalsIgnoreCase("e")) {
