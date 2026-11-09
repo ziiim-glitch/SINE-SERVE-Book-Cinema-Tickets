@@ -152,7 +152,6 @@ public class Main {
                 System.out.println(" 5. Tickets are non-refundable once confirmed.");
                 System.out.println("=================================================");
 
-                // --- CONFIRMATION ---
                 System.out.print("Do you want to confirm this reservation? (yes/no): ");
                 String confirm = scanner.nextLine().trim();
 
