@@ -6,21 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-//Exception thrown when a movie schedule or movie ID cannot be found.
 class ScheduleNotFoundException extends Exception {
     public ScheduleNotFoundException(String message) {
         super(message);
     }
 }
 
-//Exception thrown when an invalid date (such as an unsupported year) is provided.
 class InvalidDateException extends Exception {
     public InvalidDateException(String message) {
         super(message);
     }
 }
 
-//Represents a group of movies sharing a specific release or screening date range.
 class MovieGroup {
     private int id;
     private String title;
@@ -55,7 +52,6 @@ public class CinemaManager {
         regularGroups = new ArrayList<>();
         promoGroups = new ArrayList<>();
 
-        // Define movie date ranges and populate regular groups
         String range1 = "Nov 4 - Nov 15, 2026";
         regularGroups.add(new MovieGroup(1, "Godzilla Minus Zero", range1, "1:00 PM", 350.00));
         regularGroups.add(new MovieGroup(2, "Ramayana: Part 1", range1, "4:00 PM", 350.00));
@@ -82,7 +78,6 @@ public class CinemaManager {
         promoGroups.add(new MovieGroup(12, "Elf [CHRISTMAS PROMO]", promoRange, "4:00 PM", 100.00));
         promoGroups.add(new MovieGroup(13, "The Polar Express [CHRISTMAS PROMO]", promoRange, "7:00 PM", 100.00));
 
-        // Generate concrete daily schedules from templates across date ranges
         addMoviesForDateRange(LocalDate.of(2026, 11, 4), LocalDate.of(2026, 11, 15), List.of(
             new MovieSchedule("Godzilla Minus Zero", null, "1:00 PM", 350.00),
             new MovieSchedule("Ramayana: Part 1", null, "4:00 PM", 350.00),
@@ -121,7 +116,7 @@ public class CinemaManager {
             for (MovieSchedule movie : templateMovies) {
                 schedules.add(new MovieSchedule(movie.getTitle(), current, movie.getShowTime(), movie.getPrice()));
             }
-            current = current.plusDays(1); // Move to the next calendar day
+            current = current.plusDays(1); 
         }
     }
 
@@ -129,7 +124,6 @@ public class CinemaManager {
     public List<MovieGroup> getPromoGroups() { return promoGroups; }
 
     public MovieSchedule getMovieTicket(String dateInput, int movieNumber) throws InvalidDateException, ScheduleNotFoundException, DateTimeParseException {
-        // Build a flexible date formatter to support multiple date input formats (YYYY-MM-DD, Month D, YYYY, etc.)
         DateTimeFormatter flexibleFormatter = new DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .append(DateTimeFormatter.ofPattern("[yyyy-MM-dd][MMMM d, yyyy][MMM d, yyyy]"))
