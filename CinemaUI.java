@@ -231,12 +231,7 @@ public class CinemaUI extends JFrame {
         leftBox.add(divider);
         leftBox.add(tag);
 
-        JLabel subtitle = new JLabel("SOBRANG GWAPO NUNG GUMAWA");
-        subtitle.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        subtitle.setForeground(TEXT_MUTED); 
-
         banner.add(leftBox, BorderLayout.WEST);
-        banner.add(subtitle, BorderLayout.EAST);
         return banner;
     }
 
