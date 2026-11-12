@@ -24,6 +24,7 @@ class MovieGroup {
     private String dateRange;
     private String time;
     private double price;
+    private String posterPath;
 
     public MovieGroup(int id, String title, String dateRange, String time, double price) {
         this.id = id;
@@ -31,6 +32,28 @@ class MovieGroup {
         this.dateRange = dateRange;
         this.time = time;
         this.price = price;
+        this.posterPath = findPosterFor(title);
+    }
+
+    
+    private static String findPosterFor(String title) {
+        String t = title.replace("[CHRISTMAS PROMO]", "").trim();
+        switch (t) {
+            case "Godzilla Minus Zero": return "posters/godzilla-minus-zero.jpg";
+            case "Ramayana: Part 1": return "posters/ramayana-part-1.jpg";
+            case "The Cat in the Hat": return "posters/the-cat-in-the-hat.jpg";
+            case "Victorian Psycho": return "posters/victorian-psycho.jpg";
+            case "Ebenezer": return "posters/ebenezer.jpg";
+            case "How to Rob a Bank": return "posters/how-to-rob-a-bank.jpg";
+            case "The Hunger Games: Sunrise on the Reaping": return "posters/hunger-games-sunrise-on-the-reaping.jpg";
+            case "The Further Mis-Adventures of Cliff Booth": return "posters/cliff-booth.jpg";
+            case "Avengers: Doomsday": return "posters/avengers-doomsday.jpg";
+            case "Home Alone": return "posters/home-alone.jpg";
+            case "It's a Wonderful Life": return "posters/wonderfol-life.jpg";
+            case "Elf": return "posters/elf.jpg";
+            case "The Polar Express": return "posters/plar-express.jpg";
+            default: return null;
+        }
     }
 
     public int getId() { return id; }
@@ -38,15 +61,15 @@ class MovieGroup {
     public String getDateRange() { return dateRange; }
     public String getTime() { return time; }
     public double getPrice() { return price; }
+    public String getPosterPath() { return posterPath; }
+    public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
 }
 
-//Manages movie schedules, regular movie lists, promotional lists, and handles ticket queries based on dates and movie IDs.
 public class CinemaManager {
     private List<MovieSchedule> schedules;
     private List<MovieGroup> regularGroups;
     private List<MovieGroup> promoGroups;
 
-//Initializes the cinema manager with default regular movies, Christmas promotional groups, and populates daily schedules.
     public CinemaManager() {
         schedules = new ArrayList<>();
         regularGroups = new ArrayList<>();
@@ -71,12 +94,12 @@ public class CinemaManager {
         String range5 = "Dec 18 - Dec 31, 2026";
         regularGroups.add(new MovieGroup(9, "Avengers: Doomsday", range5, "3:00 PM", 400.00));
 
-        // Define and populate Christmas promotional movie groups
+        //CHRISTMAS PROMO MOVIES
         String promoRange = "Dec 20 - Dec 31, 2026";
-        promoGroups.add(new MovieGroup(10, "Home Alone [CHRISTMAS PROMO]", promoRange, "11:00 AM", 100.00));
-        promoGroups.add(new MovieGroup(11, "It's a Wonderful Life [CHRISTMAS PROMO]", promoRange, "1:30 PM", 100.00));
-        promoGroups.add(new MovieGroup(12, "Elf [CHRISTMAS PROMO]", promoRange, "4:00 PM", 100.00));
-        promoGroups.add(new MovieGroup(13, "The Polar Express [CHRISTMAS PROMO]", promoRange, "7:00 PM", 100.00));
+        promoGroups.add(new MovieGroup(10, "Home Alone [CHRISTMAS PROMO]", promoRange, "11:00 AM", 102.00));
+        promoGroups.add(new MovieGroup(11, "It's a Wonderful Life [CHRISTMAS PROMO]", promoRange, "1:30 PM", 102.00));
+        promoGroups.add(new MovieGroup(12, "Elf [CHRISTMAS PROMO]", promoRange, "4:00 PM", 102.00));
+        promoGroups.add(new MovieGroup(13, "The Polar Express [CHRISTMAS PROMO]", promoRange, "7:00 PM", 102.00));
 
         addMoviesForDateRange(LocalDate.of(2026, 11, 4), LocalDate.of(2026, 11, 15), List.of(
             new MovieSchedule("Godzilla Minus Zero", null, "1:00 PM", 350.00),
@@ -109,14 +132,14 @@ public class CinemaManager {
             new MovieSchedule("The Polar Express [CHRISTMAS PROMO]", null, "7:00 PM", 102.00)
         ));
     }
-     
+
     private void addMoviesForDateRange(LocalDate startDate, LocalDate endDate, List<MovieSchedule> templateMovies) {
         LocalDate current = startDate;
         while (!current.isAfter(endDate)) {
             for (MovieSchedule movie : templateMovies) {
                 schedules.add(new MovieSchedule(movie.getTitle(), current, movie.getShowTime(), movie.getPrice()));
             }
-            current = current.plusDays(1); 
+            current = current.plusDays(1);
         }
     }
 
@@ -131,6 +154,7 @@ public class CinemaManager {
 
         LocalDate targetDate = LocalDate.parse(dateInput.trim(), flexibleFormatter);
 
+        //Validation
         if (targetDate.getYear() < 2026) {
             throw new InvalidDateException("Invalid date: Years below 2026 are not allowed.");
         }
@@ -152,7 +176,6 @@ public class CinemaManager {
                 break;
             }
         }
-        
         if (selectedTitle == null) {
             for (MovieGroup group : promoGroups) {
                 if (group.getId() == movieNumber) {
