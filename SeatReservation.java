@@ -64,8 +64,6 @@ public class SeatReservation {
             }
         }
 
-        System.out.println("\nProgram exited successfully!");
-        input.close();
     }
     private static char[][] createNewSeatPlan() {
         char[][] seats = new char[10][9];
