@@ -60,7 +60,7 @@ public class CinemaUI extends JFrame {
     private final boolean isGuest;
 
     // Search & Filter State
-    private String activeFilter = "ALL"; // ALL, REGULAR, PROMO
+    private String activeFilter = "ALL";
     private String searchQuery = "";
     private JPanel featuredSectionWrapper;
     private JPanel regularSectionWrapper;
@@ -262,9 +262,7 @@ public class CinemaUI extends JFrame {
         }
     }
 
-    // =========================================================================
     // 1. HEADER: GRADIENT BAR WITH ROUNDED BOTTOM CORNERS, LOGO, AVATAR & LOGOUT
-    // =========================================================================
     private JPanel createHeaderBanner() {
         JPanel banner = new JPanel(new BorderLayout()) {
             @Override
@@ -380,9 +378,7 @@ public class CinemaUI extends JFrame {
         return banner;
     }
 
-    // =========================================================================
     // 5. TOP SEARCH + FILTER BAR (ALL / NOW SHOWING / PROMOS)
-    // =========================================================================
     private JPanel createFilterAndSearchBar() {
         JPanel bar = new JPanel(new BorderLayout(16, 0));
         bar.setOpaque(false);
@@ -501,9 +497,7 @@ public class CinemaUI extends JFrame {
         }
     }
 
-    // =========================================================================
     // 2. FEATURED CAROUSEL (ROUNDED CARDS, BADGE, GOLD PILL, GRAPHICS2D ARROWS)
-    // =========================================================================
     private JPanel createTopBrowsingSection(List<MovieGroup> movies) {
         JPanel container = new JPanel(new BorderLayout(0, 12));
         container.setOpaque(false);
@@ -675,7 +669,7 @@ public class CinemaUI extends JFrame {
         String cleanTitle = group.getTitle().replace("[CHRISTMAS PROMO]", "").trim();
 
         int cardWidth = 252;
-        int innerWidth = cardWidth - 28; // 224px
+        int innerWidth = cardWidth - 28;
 
         UITheme.RoundedPanel card = new UITheme.RoundedPanel(
                 20,
@@ -880,9 +874,7 @@ public class CinemaUI extends JFrame {
         }
     }
 
-    // =========================================================================
     // SECTION DIVIDERS & HEADERS
-    // =========================================================================
     private JSeparator createSectionDivider() {
         JSeparator sep = new JSeparator();
         sep.setForeground(UITheme.BORDER_SUBTLE);
@@ -984,9 +976,7 @@ public class CinemaUI extends JFrame {
         return grid;
     }
 
-    // =========================================================================
     // 3 & 4. REUSABLE MOVIE CARD (ROUNDED, HOVER GLOW, ICONS, GOLD PILL, RIBBON)
-    // =========================================================================
     private class MovieCard extends UITheme.RoundedPanel {
         public MovieCard(MovieGroup group, boolean isPromo) {
             super(
@@ -1119,9 +1109,7 @@ public class CinemaUI extends JFrame {
         }
     }
 
-    // =========================================================================
     // BOOKING, SEAT SELECTION & RECEIPT DIALOGS
-    // =========================================================================
     private LocalDate[] parseMovieDateRange(String dateRangeStr) {
         try {
             String[] parts = dateRangeStr.split("-");

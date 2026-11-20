@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class UITheme {
 
-    // --- Core Palette ---
+    //Core Palette
     public static final Color BG_DEEP = new Color(18, 14, 33);         // #120E21
     public static final Color BG_MID = new Color(28, 21, 52);          // #1C1534
     public static final Color CARD_BG = new Color(30, 24, 56);         // #1E1838
@@ -30,7 +30,7 @@ public class UITheme {
     public static final Color BORDER_SUBTLE = new Color(64, 52, 108);  // #40346C
     public static final Color DISABLED_BG = new Color(25, 20, 42);
 
-    // --- Segoe UI Font Hierarchy ---
+    //Segoe UI Font Hierarchy
     public static Font fontDisplay(int size) {
         return new Font("Segoe UI", Font.BOLD, size);
     }
@@ -49,9 +49,8 @@ public class UITheme {
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     }
 
-    // =========================================================================
+
     // 1. GRADIENT BACKGROUND PANEL
-    // =========================================================================
     public static class GradientBackgroundPanel extends JPanel {
         private final Color topColor;
         private final Color bottomColor;
@@ -83,9 +82,7 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
     // 2. ROUNDED PANEL WITH DROP SHADOW & ANIMATED HOVER LIFT / GLOW
-    // =========================================================================
     public static class RoundedPanel extends JPanel {
         private final int radius;
         private final Color fillColor;
@@ -178,9 +175,7 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
     // 3. GRADIENT & GHOST ANIMATED BUTTON
-    // =========================================================================
     public static class GradientButton extends JButton {
         private Color startColor;
         private Color endColor;
@@ -307,9 +302,7 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
     // 4. PILL BADGE LABEL
-    // =========================================================================
     public static class PillLabel extends JLabel {
         private final Color bgColor;
         private final Color borderColor;
@@ -339,9 +332,7 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
     // 5. DIAGONAL CORNER RIBBON (FOR CHRISTMAS PROMOS)
-    // =========================================================================
     public static class DiagonalRibbon extends JComponent {
         private final String text;
 
@@ -377,9 +368,8 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
+
     // 6. ROUNDED INPUT FIELD WITH ICON, PLACEHOLDER & FOCUS GLOW
-    // =========================================================================
     public static class IconTextField extends JPanel {
         private final JTextField textField;
         private boolean focused = false;
@@ -464,9 +454,7 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
     // 7. ROUNDED PASSWORD FIELD WITH LOCK ICON & SHOW/HIDE TOGGLE
-    // =========================================================================
     public static class IconPasswordField extends JPanel {
         private final JPasswordField passwordField;
         private final char defaultEchoChar;
@@ -572,9 +560,7 @@ public class UITheme {
         }
     }
 
-    // =========================================================================
     // 8. ROUNDED IMAGE CLIPPER
-    // =========================================================================
     public static ImageIcon roundImageIcon(ImageIcon source, int cornerRadius) {
         if (source == null) return null;
         int w = source.getIconWidth();
@@ -588,9 +574,7 @@ public class UITheme {
         return new ImageIcon(output);
     }
 
-    // =========================================================================
     // 9. VECTOR ICONS (FILM REEL LOGO, USER, LOCK, CALENDAR, CLOCK, SNOWFLAKE)
-    // =========================================================================
     public static class CinemaLogoIcon implements Icon {
         private final int size;
 
