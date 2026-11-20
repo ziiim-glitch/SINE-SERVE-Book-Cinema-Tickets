@@ -1,39 +1,40 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class CreateAccount extends JFrame {
+
     private static final String FILE_NAME = "accounts.txt";
-
-    private int loginAttempts = 0;
     private static final int MAX_ATTEMPTS = 3;
+    private int loginAttempts = 0;
 
-    private CardLayout cardLayout;
-    private JPanel cardContainer;
+    private final CardLayout cardLayout;
+    private final JPanel cardContainer;
 
     public CreateAccount() {
-        setTitle("SINE-SERVE | Book • Watch • Enjoy");
-        setSize(980, 620);
-        setMinimumSize(new Dimension(860, 560));
+        setTitle("SINE-SERVE | Sign In or Create Account");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(980, 650);
+        setMinimumSize(new Dimension(860, 580));
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new Color(0x12, 0x0E, 0x21));
+        getContentPane().setBackground(UITheme.BG_DEEP);
 
-        JPanel root = new JPanel(new GridLayout(1, 2));
+        JPanel root = new JPanel(new GridLayout(1, 2, 0, 0));
         root.setBackground(UITheme.BG_DEEP);
 
-        root.add(createBrandShowcasePanel());
+        root.add(createBrandingHeroPanel());
 
         JPanel rightWrapper = new JPanel(new GridBagLayout());
         rightWrapper.setBackground(UITheme.BG_DEEP);
-        rightWrapper.setBorder(new EmptyBorder(24, 28, 24, 28));
+        rightWrapper.setBorder(new EmptyBorder(24, 24, 24, 24));
 
         cardLayout = new CardLayout();
         cardContainer = new JPanel(cardLayout);
@@ -48,8 +49,8 @@ public class CreateAccount extends JFrame {
         add(root);
     }
 
-    private JPanel createBrandShowcasePanel() {
-        JPanel brandPanel = new JPanel(new GridBagLayout()) {
+    private JPanel createBrandingHeroPanel() {
+        JPanel hero = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -60,17 +61,17 @@ public class CreateAccount extends JFrame {
                 int h = getHeight();
 
                 GradientPaint gp = new GradientPaint(
-                        0, 0, new Color(46, 22, 92),
+                        0, 0, new Color(46, 22, 96),
                         w, h, new Color(18, 14, 33)
                 );
                 g2.setPaint(gp);
                 g2.fillRect(0, 0, w, h);
 
-                g2.setColor(new Color(168, 85, 247, 36));
-                g2.fill(new Ellipse2D.Double(-70, -50, 320, 320));
+                g2.setColor(new Color(168, 85, 247, 32));
+                g2.fillOval(-60, -40, 320, 320);
 
                 g2.setColor(new Color(236, 72, 153, 28));
-                g2.fill(new Ellipse2D.Double(w - 220, h - 240, 300, 300));
+                g2.fillOval(w - 220, h - 240, 340, 340);
 
                 g2.setColor(UITheme.BORDER_SUBTLE);
                 g2.drawLine(w - 1, 0, w - 1, h);
@@ -78,54 +79,53 @@ public class CreateAccount extends JFrame {
                 g2.dispose();
             }
         };
-        brandPanel.setBorder(new EmptyBorder(40, 44, 40, 44));
+        hero.setLayout(new BoxLayout(hero, BoxLayout.Y_AXIS));
+        hero.setBorder(new EmptyBorder(54, 48, 54, 48));
 
-        JPanel content = new JPanel();
-        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.setOpaque(false);
-
-        JLabel logoIcon = new JLabel(new UITheme.CinemaLogoIcon(76));
+        JLabel logoIcon = new JLabel(new UITheme.CinemaLogoIcon(64));
         logoIcon.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel brandName = new JLabel("SINE-SERVE");
-        brandName.setFont(UITheme.fontDisplay(38));
-        brandName.setForeground(UITheme.TEXT_WHITE);
-        brandName.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel brandTitle = new JLabel("SINE-SERVE");
+        brandTitle.setFont(UITheme.fontDisplay(38));
+        brandTitle.setForeground(UITheme.TEXT_WHITE);
+        brandTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel tagline = new JLabel("Book • Watch • Enjoy");
         tagline.setFont(UITheme.fontBold(16));
         tagline.setForeground(UITheme.ACCENT_GLOW);
         tagline.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel desc = new JLabel("<html><div style='width: 310px; line-height: 1.45;'>"
-                + "Experience hassle-free cinema seat reservations with real-time seat selection, "
-                + "exclusive holiday promos, and instant e-ticket receipts.</div></html>");
-        desc.setFont(UITheme.fontRegular(13));
+        JLabel desc = new JLabel("<html><div style='width:340px; line-height:1.45;'>"
+                + "Reserve your favorite seats in seconds, explore upcoming blockbusters, and enjoy exclusive seasonal promos."
+                + "</div></html>");
+        desc.setFont(UITheme.fontRegular(14));
         desc.setForeground(UITheme.TEXT_MUTED);
         desc.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        content.add(logoIcon);
-        content.add(Box.createRigidArea(new Dimension(0, 18)));
-        content.add(brandName);
-        content.add(Box.createRigidArea(new Dimension(0, 6)));
-        content.add(tagline);
-        content.add(Box.createRigidArea(new Dimension(0, 18)));
-        content.add(desc);
-        content.add(Box.createRigidArea(new Dimension(0, 28)));
-        content.add(createFeatureBullet("Interactive 90-Seat Cinema Layout"));
-        content.add(Box.createRigidArea(new Dimension(0, 10)));
-        content.add(createFeatureBullet("PWD / Senior Priority Seating & Discounts"));
-        content.add(Box.createRigidArea(new Dimension(0, 10)));
-        content.add(createFeatureBullet("Instant Digital Receipt & Barcode"));
+        hero.add(Box.createVerticalGlue());
+        hero.add(logoIcon);
+        hero.add(Box.createRigidArea(new Dimension(0, 18)));
+        hero.add(brandTitle);
+        hero.add(Box.createRigidArea(new Dimension(0, 6)));
+        hero.add(tagline);
+        hero.add(Box.createRigidArea(new Dimension(0, 18)));
+        hero.add(desc);
+        hero.add(Box.createRigidArea(new Dimension(0, 28)));
+        hero.add(createFeatureBullet("Interactive real-time seat selection"));
+        hero.add(Box.createRigidArea(new Dimension(0, 12)));
+        hero.add(createFeatureBullet("PWD & Senior Citizen priority seating & discounts"));
+        hero.add(Box.createRigidArea(new Dimension(0, 12)));
+        hero.add(createFeatureBullet("Instant digital e-ticket & receipt generation"));
+        hero.add(Box.createVerticalGlue());
 
-        brandPanel.add(content);
-        return brandPanel;
+        return hero;
     }
 
-private JPanel createFeatureBullet(String text) {
+    private JPanel createFeatureBullet(String text) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         row.setOpaque(false);
         row.setAlignmentX(Component.LEFT_ALIGNMENT);
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
 
         JLabel icon = new JLabel(new Icon() {
             @Override public int getIconWidth() { return 16; }
@@ -171,26 +171,46 @@ private JPanel createFeatureBullet(String text) {
         UITheme.IconTextField userField = new UITheme.IconTextField("Enter your username", UITheme.VectorIcon.Type.USER);
         UITheme.IconPasswordField passField = new UITheme.IconPasswordField("Enter your password");
 
+        JPanel errorRow = new JPanel(new BorderLayout());
+        errorRow.setOpaque(false);
+        errorRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        errorRow.setMaximumSize(new Dimension(346, 36));
+        errorRow.setPreferredSize(new Dimension(346, 36));
+
         JLabel errorLabel = new JLabel(" ", SwingConstants.CENTER);
         errorLabel.setFont(UITheme.fontBold(12));
         errorLabel.setForeground(UITheme.ACCENT_PINK);
-        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        errorRow.add(errorLabel, BorderLayout.CENTER);
+
+        DocumentListener clearErrorOnType = new DocumentListener() {
+            private void clear() {
+                if (!" ".equals(errorLabel.getText())) {
+                    errorLabel.setText(" ");
+                }
+            }
+            @Override public void insertUpdate(DocumentEvent e) { clear(); }
+            @Override public void removeUpdate(DocumentEvent e) { clear(); }
+            @Override public void changedUpdate(DocumentEvent e) { clear(); }
+        };
+        userField.getField().getDocument().addDocumentListener(clearErrorOnType);
+        passField.getField().getDocument().addDocumentListener(clearErrorOnType);
 
         UITheme.GradientButton loginBtn = new UITheme.GradientButton("Log In", UITheme.ACCENT_VIOLET, UITheme.ACCENT_PINK, 14);
-        loginBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
-        loginBtn.setPreferredSize(new Dimension(340, 44));
+        loginBtn.setMaximumSize(new Dimension(346, 44));
+        loginBtn.setPreferredSize(new Dimension(346, 44));
         loginBtn.setFont(UITheme.fontBold(14));
         loginBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         UITheme.GradientButton guestBtn = UITheme.GradientButton.createGhost("Continue as Guest", UITheme.ACCENT_LIGHT, 14);
-        guestBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        guestBtn.setPreferredSize(new Dimension(340, 40));
+        guestBtn.setMaximumSize(new Dimension(346, 40));
+        guestBtn.setPreferredSize(new Dimension(346, 40));
         guestBtn.setFont(UITheme.fontBold(13));
         guestBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel switchRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
         switchRow.setOpaque(false);
         switchRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        switchRow.setMaximumSize(new Dimension(346, 26));
 
         JLabel noAccLbl = new JLabel("Don't have an account?");
         noAccLbl.setFont(UITheme.fontRegular(12));
@@ -217,7 +237,13 @@ private JPanel createFeatureBullet(String text) {
             String password = new String(passField.getPassword());
 
             if (username.isEmpty() || password.isEmpty()) {
-                errorLabel.setText("Please enter both username and password.");
+                errorLabel.setText("Please enter your username and password.");
+                return;
+            }
+
+            if (!accountExists(username)) {
+                errorLabel.setText("Account does not exist. Please create an account.");
+                pulseCreateAccountLink(switchToRegBtn);
                 return;
             }
 
@@ -233,7 +259,7 @@ private JPanel createFeatureBullet(String text) {
                     System.exit(0);
                 } else {
                     int remaining = MAX_ATTEMPTS - loginAttempts;
-                    errorLabel.setText("Invalid credentials! Attempts remaining: " + remaining);
+                    errorLabel.setText("Incorrect password! Attempts remaining: " + remaining);
                 }
             }
         };
@@ -254,7 +280,7 @@ private JPanel createFeatureBullet(String text) {
         card.add(Box.createRigidArea(new Dimension(0, 14)));
         card.add(createFieldGroup("Password", passField));
         card.add(Box.createRigidArea(new Dimension(0, 8)));
-        card.add(errorLabel);
+        card.add(errorRow);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(loginBtn);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -276,29 +302,36 @@ private JPanel createFeatureBullet(String text) {
         title.setForeground(UITheme.TEXT_WHITE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel subtitle = new JLabel("Join SINE-SERVE for instant seat booking");
+        JLabel subtitle = new JLabel("Join SINE-SERVE to reserve your cinema seats");
         subtitle.setFont(UITheme.fontRegular(13));
         subtitle.setForeground(UITheme.TEXT_MUTED);
         subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        UITheme.IconTextField newUserField = new UITheme.IconTextField("Choose a username", UITheme.VectorIcon.Type.USER);
-        UITheme.IconPasswordField newPassField = new UITheme.IconPasswordField("Create a password");
+        UITheme.IconTextField regUserField = new UITheme.IconTextField("Choose a username", UITheme.VectorIcon.Type.USER);
+        UITheme.IconPasswordField regPassField = new UITheme.IconPasswordField("Create a password");
         UITheme.IconPasswordField confirmPassField = new UITheme.IconPasswordField("Confirm your password");
 
-        JLabel errorLabel = new JLabel(" ", SwingConstants.CENTER);
-        errorLabel.setFont(UITheme.fontBold(12));
-        errorLabel.setForeground(UITheme.ACCENT_PINK);
-        errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel regErrorRow = new JPanel(new BorderLayout());
+        regErrorRow.setOpaque(false);
+        regErrorRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        regErrorRow.setMaximumSize(new Dimension(346, 32));
+        regErrorRow.setPreferredSize(new Dimension(346, 32));
 
-        UITheme.GradientButton regBtn = new UITheme.GradientButton("Create Account", UITheme.ACCENT_VIOLET, UITheme.ACCENT_PINK, 14);
-        regBtn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 44));
-        regBtn.setPreferredSize(new Dimension(340, 44));
-        regBtn.setFont(UITheme.fontBold(14));
-        regBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel regErrorLabel = new JLabel(" ", SwingConstants.CENTER);
+        regErrorLabel.setFont(UITheme.fontBold(12));
+        regErrorLabel.setForeground(UITheme.ACCENT_PINK);
+        regErrorRow.add(regErrorLabel, BorderLayout.CENTER);
+
+        UITheme.GradientButton registerBtn = new UITheme.GradientButton("Create Account", UITheme.ACCENT_VIOLET, UITheme.ACCENT_PINK, 14);
+        registerBtn.setMaximumSize(new Dimension(346, 44));
+        registerBtn.setPreferredSize(new Dimension(346, 44));
+        registerBtn.setFont(UITheme.fontBold(14));
+        registerBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JPanel switchRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 4, 0));
         switchRow.setOpaque(false);
         switchRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        switchRow.setMaximumSize(new Dimension(346, 26));
 
         JLabel hasAccLbl = new JLabel("Already have an account?");
         hasAccLbl.setFont(UITheme.fontRegular(12));
@@ -307,64 +340,77 @@ private JPanel createFeatureBullet(String text) {
         JButton switchToLoginBtn = new JButton("Log In");
         switchToLoginBtn.setFont(UITheme.fontBold(12));
         switchToLoginBtn.setForeground(UITheme.ACCENT_GLOW);
-        switchToLoginBtn.setMargin(new Insets(0, 1, 0, 2));
+        switchToLoginBtn.setMargin(new Insets(0, 2, 0, 2));
         switchToLoginBtn.setContentAreaFilled(false);
         switchToLoginBtn.setBorderPainted(false);
         switchToLoginBtn.setFocusPainted(false);
         switchToLoginBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         switchToLoginBtn.addActionListener(e -> {
-            errorLabel.setText(" ");
+            regErrorLabel.setText(" ");
             cardLayout.show(cardContainer, "LOGIN");
         });
 
         switchRow.add(hasAccLbl);
         switchRow.add(switchToLoginBtn);
 
-        regBtn.addActionListener(e -> {
-            String username = newUserField.getText().trim();
-            String password = new String(newPassField.getPassword());
+        Runnable performRegister = () -> {
+            String username = regUserField.getText().trim();
+            String password = new String(regPassField.getPassword());
             String confirm = new String(confirmPassField.getPassword());
 
-            if (username.isEmpty() || password.isEmpty()) {
-                errorLabel.setText("Username and password cannot be empty.");
+            if (username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
+                regErrorLabel.setText("All fields are required.");
                 return;
             }
             if (username.contains(",") || password.contains(",")) {
-                errorLabel.setText("Commas (,) are not allowed in credentials.");
+                regErrorLabel.setText("Commas are not allowed in username or password.");
+                return;
+            }
+            if (username.equalsIgnoreCase("Guest")) {
+                regErrorLabel.setText("'Guest' is a reserved system name.");
+                return;
+            }
+            if (password.length() < 4) {
+                regErrorLabel.setText("Password must be at least 4 characters.");
                 return;
             }
             if (!password.equals(confirm)) {
-                errorLabel.setText("Passwords do not match!");
+                regErrorLabel.setText("Passwords do not match.");
                 return;
             }
-            if (usernameExists(username)) {
-                errorLabel.setText("Username already exists! Choose another.");
+            if (accountExists(username)) {
+                regErrorLabel.setText("Username is already taken.");
                 return;
             }
 
             if (saveAccount(username, password)) {
-                errorLabel.setText(" ");
-                ThemedDialog.showInfo(this, "Account Created", "Account created! Welcome, " + username + ".");
-                dispose();
-                SwingUtilities.invokeLater(() -> new CinemaUI(username, false).setVisible(true));
+                regErrorLabel.setText(" ");
+                regUserField.setText("");
+                regPassField.setText("");
+                confirmPassField.setText("");
+                ThemedDialog.showInfo(this, "Account Created", "Account created successfully! Please sign in.");
+                cardLayout.show(cardContainer, "LOGIN");
             } else {
-                errorLabel.setText("Error saving account data.");
+                regErrorLabel.setText("Failed to save account. Please try again.");
             }
-        });
+        };
+
+        registerBtn.addActionListener(e -> performRegister.run());
+        confirmPassField.getField().addActionListener(e -> performRegister.run());
 
         card.add(title);
         card.add(Box.createRigidArea(new Dimension(0, 4)));
         card.add(subtitle);
-        card.add(Box.createRigidArea(new Dimension(0, 18)));
-        card.add(createFieldGroup("Username", newUserField));
+        card.add(Box.createRigidArea(new Dimension(0, 20)));
+        card.add(createFieldGroup("Username", regUserField));
         card.add(Box.createRigidArea(new Dimension(0, 12)));
-        card.add(createFieldGroup("Password", newPassField));
+        card.add(createFieldGroup("Password", regPassField));
         card.add(Box.createRigidArea(new Dimension(0, 12)));
         card.add(createFieldGroup("Confirm Password", confirmPassField));
         card.add(Box.createRigidArea(new Dimension(0, 8)));
-        card.add(errorLabel);
+        card.add(regErrorRow);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
-        card.add(regBtn);
+        card.add(registerBtn);
         card.add(Box.createVerticalGlue());
         card.add(switchRow);
 
@@ -376,57 +422,80 @@ private JPanel createFeatureBullet(String text) {
         group.setLayout(new BoxLayout(group, BoxLayout.Y_AXIS));
         group.setOpaque(false);
         group.setAlignmentX(Component.CENTER_ALIGNMENT);
+        group.setMaximumSize(new Dimension(346, 66));
 
-        JLabel label = new JLabel(labelText);
-        label.setFont(UITheme.fontBold(12));
-        label.setForeground(UITheme.TEXT_MUTED);
-        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+        JLabel lbl = new JLabel(labelText);
+        lbl.setFont(UITheme.fontBold(12));
+        lbl.setForeground(UITheme.TEXT_MUTED);
+        lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         field.setAlignmentX(Component.LEFT_ALIGNMENT);
+        field.setMaximumSize(new Dimension(346, 42));
+        field.setPreferredSize(new Dimension(346, 42));
 
-        group.add(label);
-        group.add(Box.createRigidArea(new Dimension(0, 6)));
+        group.add(lbl);
+        group.add(Box.createRigidArea(new Dimension(0, 5)));
         group.add(field);
         return group;
     }
 
-    private boolean verifyLogin(String username, String password) {
+    private boolean accountExists(String username) {
         File file = new File(FILE_NAME);
-        if (!file.exists()) {
-            return false;
-        }
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        if (!file.exists()) return false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 2 && parts[0].equals(username) && parts[1].equals(password)) {
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",", 2);
+                if (parts.length >= 1 && parts[0].trim().equals(username.trim())) {
                     return true;
                 }
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         return false;
     }
 
-    private boolean usernameExists(String username) {
+    private void pulseCreateAccountLink(JButton linkBtn) {
+        Color normalColor = UITheme.ACCENT_GLOW;
+        Color highlightColor = UITheme.ACCENT_GOLD;
+        final int[] ticks = {0};
+
+        Timer pulseTimer = new Timer(180, evt -> {
+            ticks[0]++;
+            linkBtn.setForeground(ticks[0] % 2 == 1 ? highlightColor : normalColor);
+            if (ticks[0] >= 6) {
+                linkBtn.setForeground(normalColor);
+                ((Timer) evt.getSource()).stop();
+            }
+        });
+        pulseTimer.setInitialDelay(0);
+        pulseTimer.start();
+    }
+
+    private boolean verifyLogin(String username, String password) {
         File file = new File(FILE_NAME);
-        if (!file.exists()) {
-            return false;
-        }
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        if (!file.exists()) return false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 1 && parts[0].equalsIgnoreCase(username)) {
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",", 2);
+                if (parts.length == 2
+                        && parts[0].trim().equals(username.trim())
+                        && parts[1].equals(password)) {
                     return true;
                 }
             }
-        } catch (IOException ignored) {}
+        } catch (IOException ignored) {
+        }
         return false;
     }
 
     private boolean saveAccount(String username, String password) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(FILE_NAME, true))) {
-            pw.println(username + "," + password);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
+            writer.write(username.trim() + "," + password);
+            writer.newLine();
             return true;
         } catch (IOException e) {
             return false;
@@ -434,19 +503,6 @@ private JPanel createFeatureBullet(String text) {
     }
 
     public static void main(String[] args) {
-        UIManager.put("OptionPane.background", new Color(0x1E, 0x18, 0x38));
-        UIManager.put("OptionPane.messageForeground", new Color(0xF3, 0xF4, 0xF6));
-        UIManager.put("OptionPane.foreground", new Color(0xF3, 0xF4, 0xF6));
-        UIManager.put("OptionPane.messageFont", new Font("Segoe UI", Font.PLAIN, 15));
-        UIManager.put("OptionPane.buttonFont", new Font("Segoe UI", Font.BOLD, 13));
-        UIManager.put("Panel.background", new Color(0x1E, 0x18, 0x38));
-        UIManager.put("OptionPane.border", BorderFactory.createEmptyBorder(20, 24, 16, 24));
-        UIManager.put("Button.background", new Color(0x7C, 0x3A, 0xED));
-        UIManager.put("Button.foreground", Color.WHITE);
-        UIManager.put("Button.focus", new Color(0, 0, 0, 0));
-        UIManager.put("ScrollPane.background", new Color(0x12, 0x0E, 0x21));
-        UIManager.put("Viewport.background", new Color(0x12, 0x0E, 0x21));
-
         SwingUtilities.invokeLater(() -> new CreateAccount().setVisible(true));
     }
 }
