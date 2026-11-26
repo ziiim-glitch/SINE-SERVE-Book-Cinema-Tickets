@@ -25,6 +25,7 @@ class MovieGroup {
     private String time;
     private double price;
     private String posterPath;
+    private String description;
 
     public MovieGroup(int id, String title, String dateRange, String time, double price) {
         this.id = id;
@@ -33,6 +34,7 @@ class MovieGroup {
         this.time = time;
         this.price = price;
         this.posterPath = findPosterFor(title);
+        this.description = findDescriptionFor(title);
     }
 
     
@@ -53,8 +55,31 @@ class MovieGroup {
             case "Elf": return "posters/elf.jpg";
             case "The Polar Express": return "posters/plar-express.jpg";
             default: return null;
+        
         }
     }
+
+        private static String findDescriptionFor(String title) {
+        String t = title.replace("[CHRISTMAS PROMO]", "").trim();
+        switch (t) {
+            case "Godzilla Minus Zero": return "The sequel to Godzilla Minus One. Post-war Japan is still rebuilding when a new Godzilla threat rises, and survivors must find the courage to face it.";
+            case "Ramayana: Part 1": return "An epic retelling of the ancient Indian tale of Prince Rama, his exile, and the abduction of Sita by the demon king Ravana.";
+            case "The Cat in the Hat": return "On a dull, rainy day, two bored kids are visited by a mischievous talking cat whose games turn their house upside down.";
+            case "Victorian Psycho": return "A prim governess arrives at a grand Victorian household, but behind her polite smile hides something dark and dangerously unhinged.";
+            case "Ebenezer": return "A fresh retelling of Dickens' Christmas classic, in which a bitter, miserly man is confronted by the ghosts of his past, present and future.";
+            case "How to Rob a Bank": return "A high-stakes heist story about a crew with a bold plan to pull off the perfect bank robbery, and everything that can go wrong along the way.";
+            case "The Hunger Games: Sunrise on the Reaping": return "Set decades before Katniss, Haymitch Abernathy is thrown into the brutal 50th Hunger Games, where survival means outsmarting the Capitol.";
+            case "The Further Mis-Adventures of Cliff Booth": return "Stuntman Cliff Booth returns for a new adventure, bringing his easygoing charm and a knack for trouble to a stylish crime story.";
+            case "Avengers: Doomsday": return "Earth's mightiest heroes unite against a world-ending threat led by the mastermind Doctor Doom in the next epic Marvel crossover.";
+            case "Home Alone": return "Eight-year-old Kevin is accidentally left behind when his family flies off for Christmas, and must defend his home from two clumsy burglars.";
+            case "It's a Wonderful Life": return "On Christmas Eve, a despairing George Bailey is shown by an angel how much his town would suffer had he never been born.";
+            case "Elf": return "Buddy, a human raised by Santa's elves, travels to New York City to find his real father and spread Christmas cheer.";
+            case "The Polar Express": return "On Christmas Eve, a doubtful boy boards a magical train to the North Pole and discovers the true meaning of believing.";
+            default: return "";
+        }
+    }
+
+    public String getDescription() { return description; }
 
     public int getId() { return id; }
     public String getTitle() { return title; }
@@ -69,6 +94,7 @@ public class CinemaManager {
     private List<MovieSchedule> schedules;
     private List<MovieGroup> regularGroups;
     private List<MovieGroup> promoGroups;
+    
 
     public CinemaManager() {
         schedules = new ArrayList<>();

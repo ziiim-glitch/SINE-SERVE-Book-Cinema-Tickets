@@ -24,11 +24,14 @@ public class BillingCalculator {
     }
 
     public double getOnlineFee() {
+        if ("Cash / OTC".equalsIgnoreCase(paymentMethod)) {
+            return 0.0;
+        }
         return ONLINE_FEE;
     }
 
     public double getFinalTotal() {
-        return (getSubtotal() - getDiscountAmount()) + ONLINE_FEE;
+        return (getSubtotal() - getDiscountAmount()) + getOnlineFee();
     }
 
     public String getPaymentMethod() {

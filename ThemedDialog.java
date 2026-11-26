@@ -69,8 +69,14 @@ public class ThemedDialog {
 
                 int w = getWidth();
                 int h = getHeight();
-                RoundRectangle2D shape = new RoundRectangle2D.Float(1, 1, w - 3, h - 3, 22, 22);
 
+                // Soft ambient shadow
+                for (int i = 4; i >= 1; i--) {
+                    g2.setColor(new Color(0, 0, 0, 18 * (5 - i)));
+                    g2.fillRoundRect(4 - i, 4 + i, w - 8 + (i * 2), h - 8 + i, 24 + i, 24 + i);
+                }
+
+                RoundRectangle2D shape = new RoundRectangle2D.Float(4, 4, w - 9, h - 9, 22, 22);
                 g2.setColor(BG_CARD);
                 g2.fill(shape);
 
@@ -82,13 +88,13 @@ public class ThemedDialog {
         };
         card.setOpaque(false);
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBorder(new EmptyBorder(24, 28, 22, 28));
+        card.setBorder(new EmptyBorder(26, 30, 24, 30));
 
         JLabel iconLabel = new JLabel(new DialogStatusIcon(type, 46));
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setFont(UITheme.fontDisplay(18));
         titleLabel.setForeground(TEXT_TITLE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -101,7 +107,7 @@ public class ThemedDialog {
                 "<html><div style='width:270px; text-align:center;'>" + safeHtml + "</div></html>",
                 SwingConstants.CENTER
         );
-        msgLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        msgLabel.setFont(UITheme.fontRegular(14));
         msgLabel.setForeground(TEXT_MSG);
         msgLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -112,7 +118,7 @@ public class ThemedDialog {
         if (type == DialogType.CONFIRM) {
             UITheme.GradientButton cancelBtn = UITheme.GradientButton.createGhost("Cancel", BORDER_VIOLET, 14);
             cancelBtn.setPreferredSize(new Dimension(115, 38));
-            cancelBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            cancelBtn.setFont(UITheme.fontBold(13));
             cancelBtn.addActionListener(e -> {
                 confirmed[0] = false;
                 dialog.dispose();
@@ -122,7 +128,7 @@ public class ThemedDialog {
 
         UITheme.GradientButton okBtn = new UITheme.GradientButton("OK", BORDER_VIOLET, GRADIENT_PINK, 14);
         okBtn.setPreferredSize(new Dimension(type == DialogType.CONFIRM ? 115 : 140, 38));
-        okBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        okBtn.setFont(UITheme.fontBold(13));
         okBtn.addActionListener(e -> {
             confirmed[0] = true;
             dialog.dispose();
@@ -142,8 +148,20 @@ public class ThemedDialog {
         dialog.setContentPane(card);
         dialog.pack();
         dialog.setLocationRelativeTo(owner != null ? owner : parent);
-        dialog.setVisible(true);
 
+        // Smooth fade-in entrance
+        try {
+            dialog.setOpacity(0f);
+            Timer fadeTimer = new Timer(14, e -> {
+                float op = Math.min(1f, dialog.getOpacity() + 0.14f);
+                dialog.setOpacity(op);
+                if (op >= 1f) ((Timer) e.getSource()).stop();
+            });
+            fadeTimer.start();
+        } catch (UnsupportedOperationException ignored) {
+        }
+
+        dialog.setVisible(true);
         return confirmed[0];
     }
 

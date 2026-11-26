@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -9,6 +10,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.awt.geom.RoundRectangle2D;
+import java.util.List;
+import javax.imageio.ImageIO;
 
 public class CreateAccount extends JFrame {
 
@@ -16,11 +20,11 @@ public class CreateAccount extends JFrame {
     private static final int MAX_ATTEMPTS = 3;
     private int loginAttempts = 0;
 
-    private final CardLayout cardLayout;
-    private final JPanel cardContainer;
+    private final UITheme.AnimatedCardPane cardContainer;
 
     public CreateAccount() {
         setTitle("SINE-SERVE | Sign In or Create Account");
+        setIconImages(UITheme.getAppIcons());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(980, 650);
         setMinimumSize(new Dimension(860, 580));
@@ -36,10 +40,7 @@ public class CreateAccount extends JFrame {
         rightWrapper.setBackground(UITheme.BG_DEEP);
         rightWrapper.setBorder(new EmptyBorder(24, 24, 24, 24));
 
-        cardLayout = new CardLayout();
-        cardContainer = new JPanel(cardLayout);
-        cardContainer.setOpaque(false);
-
+        cardContainer = new UITheme.AnimatedCardPane();
         cardContainer.add(createLoginPanel(), "LOGIN");
         cardContainer.add(createRegisterPanel(), "REGISTER");
 
@@ -62,12 +63,12 @@ public class CreateAccount extends JFrame {
 
                 GradientPaint gp = new GradientPaint(
                         0, 0, new Color(46, 22, 96),
-                        w, h, new Color(18, 14, 33)
+                        w, h, new Color(14, 11, 26)
                 );
                 g2.setPaint(gp);
                 g2.fillRect(0, 0, w, h);
 
-                g2.setColor(new Color(168, 85, 247, 32));
+                g2.setColor(new Color(168, 85, 247, 35));
                 g2.fillOval(-60, -40, 320, 320);
 
                 g2.setColor(new Color(236, 72, 153, 28));
@@ -90,8 +91,8 @@ public class CreateAccount extends JFrame {
         brandTitle.setForeground(UITheme.TEXT_WHITE);
         brandTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel tagline = new JLabel("Book • Watch • Enjoy");
-        tagline.setFont(UITheme.fontBold(16));
+        JLabel tagline = new JLabel("BOOK  •  WATCH  •  ENJOY");
+        tagline.setFont(UITheme.fontBold(13));
         tagline.setForeground(UITheme.ACCENT_GLOW);
         tagline.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -111,14 +112,14 @@ public class CreateAccount extends JFrame {
         hero.add(Box.createRigidArea(new Dimension(0, 18)));
         hero.add(desc);
         hero.add(Box.createRigidArea(new Dimension(0, 28)));
-        hero.add(createFeatureBullet("Interactive real-time seat selection"));
+        hero.add(createFeatureBullet("Interactive auditorium seat selection"));
         hero.add(Box.createRigidArea(new Dimension(0, 12)));
-        hero.add(createFeatureBullet("PWD & Senior Citizen priority seating & discounts"));
+        hero.add(createFeatureBullet("PWD & Senior Citizen priority seating & 20% discount"));
         hero.add(Box.createRigidArea(new Dimension(0, 12)));
-        hero.add(createFeatureBullet("Instant digital e-ticket & receipt generation"));
+        hero.add(createFeatureBullet("Instant perforated e-ticket & barcode generation"));
         hero.add(Box.createVerticalGlue());
 
-        return hero;
+        return createCinemaShowcasePanel();
     }
 
     private JPanel createFeatureBullet(String text) {
@@ -151,6 +152,255 @@ public class CreateAccount extends JFrame {
         row.add(lbl);
         return row;
     }
+
+    // LEFT PANEL: CINEMA MARQUEE & FULL-HEIGHT POSTER FAN SHOWCASE
+private JPanel createCinemaShowcasePanel() {
+    JPanel leftPanel = new JPanel() {
+        private final Image[] samplePosters = loadSamplePosters();
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g.create();
+            UITheme.enableAntiAliasing(g2);
+            int w = getWidth();
+            int h = getHeight();
+
+            // Deep Velvet Stage Gradient
+            GradientPaint bg = new GradientPaint(
+                    0, 0, new Color(38, 18, 82),
+                    w, h, new Color(15, 11, 32)
+            );
+            g2.setPaint(bg);
+            g2.fillRect(0, 0, w, h);
+
+            // Warm Cinema Spotlight Cone from Top-Center
+            RadialGradientPaint spotlight = new RadialGradientPaint(
+                    new Point(w / 2, 110),
+                    Math.max(420, (int) (w * 0.85f)),
+                    new float[]{0f, 0.55f, 1f},
+                    new Color[]{
+                            new Color(168, 85, 247, 85),
+                            new Color(236, 72, 153, 32),
+                            new Color(15, 11, 32, 0)
+                    }
+            );
+            g2.setPaint(spotlight);
+            g2.fillRect(0, 0, w, h);
+
+            // Subtle Decorative Marquee Border Frame + Top Light Bulbs
+            g2.setColor(new Color(251, 191, 36, 36));
+            g2.drawRoundRect(16, 16, w - 33, h - 32, 24, 24);
+
+            g2.setColor(new Color(251, 191, 36, 130));
+            for (int x = 32; x < w - 32; x += 26) {
+                g2.fillOval(x, 22, 4, 4);
+            }
+
+            // Dynamic Sizing so Posters Fill the Center Vertically Without Overlapping
+            int centerX = w / 2;
+            int pH = Math.max(210, Math.min(285, (int) (h * 0.36)));
+            int pW = (int) (pH * 0.67);
+            int fanY = Math.max(155, (int) (h * 0.22));
+            int spreadX = (int) (pW * 0.86);
+
+            // Glowing Stage Floor Ellipse Under the Posters
+            int floorY = fanY + pH + 8;
+            RadialGradientPaint floorGlow = new RadialGradientPaint(
+                    new Point(centerX, floorY),
+                    pW * 1.6f,
+                    new float[]{0f, 1f},
+                    new Color[]{new Color(168, 85, 247, 70), new Color(15, 11, 32, 0)}
+            );
+            g2.setPaint(floorGlow);
+            g2.fillOval(centerX - (int) (pW * 1.6), floorY - 16, (int) (pW * 3.2), 32);
+
+            // Angled 3-Poster Cinema Fan
+            drawTiltedPoster(g2, samplePosters[0], centerX - spreadX, fanY + 18, pW, pH, -12, new Color(124, 58, 237));
+            drawTiltedPoster(g2, samplePosters[2], centerX + spreadX, fanY + 18, pW, pH, 12, new Color(236, 72, 153));
+            drawTiltedPoster(g2, samplePosters[1], centerX, fanY, pW + 14, pH + 18, 0, UITheme.ACCENT_GOLD);
+
+            // Right-edge subtle border line
+            g2.setColor(UITheme.BORDER_SUBTLE);
+            g2.drawLine(w - 1, 0, w - 1, h);
+            g2.dispose();
+        }
+
+        private void drawTiltedPoster(Graphics2D g2, Image img, int cx, int cy, int pw, int ph, double angleDeg, Color rimColor) {
+            Graphics2D pg = (Graphics2D) g2.create();
+            UITheme.enableAntiAliasing(pg);
+            pg.translate(cx, cy + ph / 2.0);
+            pg.rotate(Math.toRadians(angleDeg));
+
+            int x = -pw / 2;
+            int y = -ph / 2;
+
+            // Deep Drop Shadow
+            pg.setColor(new Color(0, 0, 0, 140));
+            pg.fillRoundRect(x + 5, y + 10, pw, ph, 18, 18);
+
+            // Poster Clip
+            Shape clip = new RoundRectangle2D.Float(x, y, pw, ph, 18, 18);
+            pg.setClip(clip);
+            if (img != null) {
+                pg.drawImage(img, x, y, pw, ph, null);
+            } else {
+                GradientPaint fallback = new GradientPaint(x, y, new Color(46, 30, 92), x + pw, y + ph, new Color(26, 18, 54));
+                pg.setPaint(fallback);
+                pg.fillRect(x, y, pw, ph);
+                pg.setColor(UITheme.TEXT_MUTED);
+                pg.setFont(UITheme.fontBold(11));
+                pg.drawString("SINE-SERVE", x + 28, y + ph / 2);
+            }
+            pg.setClip(null);
+
+            // Glowing Frame Rim
+            pg.setColor(new Color(rimColor.getRed(), rimColor.getGreen(), rimColor.getBlue(), 210));
+            pg.setStroke(new BasicStroke(1.8f));
+            pg.draw(clip);
+            pg.dispose();
+        }
+
+        private Image[] loadSamplePosters() {
+            Image[] imgs = new Image[3];
+            try {
+                CinemaManager cm = new CinemaManager();
+                List<MovieGroup> list = cm.getRegularGroups();
+                for (int i = 0; i < Math.min(3, list.size()); i++) {
+                    String path = list.get(i).getPosterPath();
+                    if (path != null) {
+                        File f = new File(path);
+                        if (!f.exists()) f = new File(System.getProperty("user.dir"), path);
+                        if (f.exists()) imgs[i] = ImageIO.read(f);
+                    }
+                }
+            } catch (Exception ignored) {}
+            return imgs;
+        }
+    };
+
+    leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+    leftPanel.setBorder(new EmptyBorder(46, 44, 42, 44));
+
+    // Top Brand Header
+    JPanel brandRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+    brandRow.setOpaque(false);
+    brandRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+    brandRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 46));
+
+    JLabel logoIcon = new JLabel(new UITheme.CinemaLogoIcon(38));
+    JLabel brandName = new JLabel("SINE-SERVE");
+    brandName.setFont(UITheme.fontDisplay(30));
+    brandName.setForeground(UITheme.TEXT_WHITE);
+
+    UITheme.PillLabel liveBadge = new UITheme.PillLabel(
+            "BOX OFFICE LIVE",
+            new Color(16, 185, 129, 45),
+            new Color(110, 231, 183),
+            UITheme.PROMO_GREEN
+    );
+    liveBadge.setFont(UITheme.fontBold(10));
+
+    brandRow.add(logoIcon);
+    brandRow.add(brandName);
+    brandRow.add(liveBadge);
+
+    JLabel tagline = new JLabel("BOOK   •   WATCH   •   ENJOY");
+    tagline.setFont(UITheme.fontBold(13));
+    tagline.setForeground(UITheme.ACCENT_GOLD);
+    tagline.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    leftPanel.add(brandRow);
+    leftPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+    leftPanel.add(tagline);
+
+    // Flexible Glue Pushes the Bottom Card Down so It NEVER Overlaps the Posters
+    leftPanel.add(Box.createVerticalGlue());
+
+    // Now Showing Mini Pill Above the Ticket Strip
+    UITheme.PillLabel nowShowingPill = new UITheme.PillLabel(
+            "NOW PREMIERING IN ALL 4 AUDITORIUMS",
+            new Color(124, 58, 237, 45),
+            UITheme.ACCENT_GLOW,
+            UITheme.BORDER_SUBTLE
+    );
+    nowShowingPill.setFont(UITheme.fontBold(10));
+    nowShowingPill.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    // Bottom Cinema Ticket-Stub Strip with Vertical Dividers
+    UITheme.RoundedPanel ticketStrip = new UITheme.RoundedPanel(18, new Color(24, 18, 48, 235), UITheme.BORDER_SUBTLE, false);
+    ticketStrip.setLayout(new GridBagLayout());
+    ticketStrip.setBorder(new EmptyBorder(16, 18, 16, 18));
+    ticketStrip.setMaximumSize(new Dimension(480, 78));
+    ticketStrip.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridy = 0;
+    gbc.weighty = 1.0;
+    gbc.fill = GridBagConstraints.BOTH;
+
+    gbc.gridx = 0;
+    gbc.weightx = 1.0;
+    ticketStrip.add(createCinemaStatCell("4 HALLS", "Now Showing & Promos"), gbc);
+
+    gbc.gridx = 1;
+    gbc.weightx = 0;
+    ticketStrip.add(createVerticalDivider(), gbc);
+
+    gbc.gridx = 2;
+    gbc.weightx = 1.0;
+    ticketStrip.add(createCinemaStatCell("INSTANT PASS", "Digital E-Ticket"), gbc);
+
+    gbc.gridx = 3;
+    gbc.weightx = 0;
+    ticketStrip.add(createVerticalDivider(), gbc);
+
+    gbc.gridx = 4;
+    gbc.weightx = 1.0;
+    ticketStrip.add(createCinemaStatCell("20% OFF", "PWD / Senior Priority"), gbc);
+
+    JLabel footerNote = new JLabel("Select your seats live and walk straight to the auditorium.");
+    footerNote.setFont(UITheme.fontRegular(12));
+    footerNote.setForeground(UITheme.TEXT_MUTED);
+    footerNote.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    leftPanel.add(nowShowingPill);
+    leftPanel.add(Box.createRigidArea(new Dimension(0, 14)));
+    leftPanel.add(ticketStrip);
+    leftPanel.add(Box.createRigidArea(new Dimension(0, 14)));
+    leftPanel.add(footerNote);
+
+    return leftPanel;
+}
+
+private JComponent createVerticalDivider() {
+    JPanel div = new JPanel();
+    div.setOpaque(true);
+    div.setBackground(UITheme.BORDER_SUBTLE);
+    div.setPreferredSize(new Dimension(1, 34));
+    return div;
+}
+
+private JPanel createCinemaStatCell(String top, String bottom) {
+    JPanel cell = new JPanel();
+    cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
+    cell.setOpaque(false);
+
+    JLabel t = new JLabel(top);
+    t.setFont(UITheme.fontBold(11));
+    t.setForeground(UITheme.ACCENT_GLOW);
+    t.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    JLabel b = new JLabel(bottom);
+    b.setFont(UITheme.fontRegular(11));
+    b.setForeground(UITheme.TEXT_WHITE);
+    b.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+    cell.add(t);
+    cell.add(Box.createRigidArea(new Dimension(0, 3)));
+    cell.add(b);
+    return cell;
+}
 
     private JPanel createLoginPanel() {
         UITheme.RoundedPanel card = new UITheme.RoundedPanel(22, UITheme.CARD_BG, UITheme.BORDER_SUBTLE, false);
@@ -226,7 +476,7 @@ public class CreateAccount extends JFrame {
         switchToRegBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         switchToRegBtn.addActionListener(e -> {
             errorLabel.setText(" ");
-            cardLayout.show(cardContainer, "REGISTER");
+            cardContainer.showAnimated("REGISTER", true);
         });
 
         switchRow.add(noAccLbl);
@@ -347,7 +597,7 @@ public class CreateAccount extends JFrame {
         switchToLoginBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         switchToLoginBtn.addActionListener(e -> {
             regErrorLabel.setText(" ");
-            cardLayout.show(cardContainer, "LOGIN");
+            cardContainer.showAnimated("LOGIN", false);
         });
 
         switchRow.add(hasAccLbl);
@@ -389,7 +639,7 @@ public class CreateAccount extends JFrame {
                 regPassField.setText("");
                 confirmPassField.setText("");
                 ThemedDialog.showInfo(this, "Account Created", "Account created successfully! Please sign in.");
-                cardLayout.show(cardContainer, "LOGIN");
+                cardContainer.showAnimated("LOGIN", false);
             } else {
                 regErrorLabel.setText("Failed to save account. Please try again.");
             }
